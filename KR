@@ -1,0 +1,96 @@
+import random
+import time
+import matplotlib.pyplot as plt
+
+# Быстрая сортировка (Quick Sort)
+def quick_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quick_sort(left) + middle + quick_sort(right)
+
+# Сортировка выбором (Selection Sort)
+def selection_sort(arr):
+    swaps = 0
+    for i in range(len(arr)):
+        min_idx = i
+        for j in range(i + 1, len(arr)):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        if min_idx != i:
+            arr[i], arr[min_idx] = arr[min_idx], arr[i]
+            swaps += 1
+    return arr, swaps
+
+# Пузырьковая сортировка (Bubble Sort)
+def bubble_sort(arr):
+    swaps = 0
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                swaps += 1
+    return arr, swaps
+
+# Замер времени и количества перестановок для сортировки
+sizes = [10, 100, 1000]
+algorithms = ["Quick Sort", "Selection Sort", "Bubble Sort"]
+results = {alg: {"time": [], "swaps": []} for alg in algorithms}
+
+for size in sizes:
+    data = [random.randint(1, 1000) for _ in range(size)]
+
+    # Быстрая сортировка
+    start_time = time.time()
+    quick_sort(data[:])
+    results["Quick Sort"]["time"].append(time.time() - start_time)
+    results["Quick Sort"]["swaps"].append(0)  # Количество перестановок не считается для Quick Sort
+
+    # Сортировка выбором
+    start_time = time.time()
+    _, swaps = selection_sort(data[:])
+    results["Selection Sort"]["time"].append(time.time() - start_time)
+    results["Selection Sort"]["swaps"].append(swaps)
+
+    # Пузырьковая сортировка
+    start_time = time.time()
+    _, swaps = bubble_sort(data[:])
+    results["Bubble Sort"]["time"].append(time.time() - start_time)
+    results["Bubble Sort"]["swaps"].append(swaps)
+
+# Построение графиков
+plt.figure(figsize=(14, 6))
+
+# Время выполнения
+plt.subplot(1, 2, 1)
+for alg in algorithms:
+    plt.plot(sizes, results[alg]["time"], label=alg)
+plt.title("Время выполнения алгоритмов сортировки")
+plt.xlabel("Размер массива")
+plt.ylabel("Время (секунды)")
+plt.legend()
+plt.grid()
+
+# Количество перестановок
+plt.subplot(1, 2, 2)
+for alg in algorithms:
+    if alg != "Quick Sort":  # Перестановки не считаются для Quick Sort
+        plt.plot(sizes, results[alg]["swaps"], label=alg)
+plt.title("Количество перестановок для алгоритмов сортировки")
+plt.xlabel("Размер массива")
+plt.ylabel("Количество перестановок")
+plt.legend()
+plt.grid()
+
+plt.tight_layout()
+plt.show()
+
+# Вывод результатов
+for alg in algorithms:
+    print(f"\n{alg}:")
+    for i, size in enumerate(sizes):
+        print(f"Размер массива {size}: Время = {results[alg]['time'][i]:.6f} сек, Перестановки = {results[alg]['swaps'][i]}")
