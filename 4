@@ -1,0 +1,115 @@
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+class BinaryTree:
+    def __init__(self):
+        self.root = None
+
+    # Добавление вершины в дерево
+    def insert(self, value):
+        if self.root is None:
+            self.root = Node(value)
+        else:
+            self._insert(self.root, value)
+
+    def _insert(self, current, value):
+        if value < current.value:
+            if current.left is None:
+                current.left = Node(value)
+            else:
+                self._insert(current.left, value)
+        else:
+            if current.right is None:
+                current.right = Node(value)
+            else:
+                self._insert(current.right, value)
+
+    # a) Вычисление среднего арифметического всех вершин дерева
+    def calculate_average(self):
+        def traverse(node):
+            if node is None:
+                return (0, 0)  # (сумма, количество)
+            left_sum, left_count = traverse(node.left)
+            right_sum, right_count = traverse(node.right)
+            return (left_sum + right_sum + node.value, left_count + right_count + 1)
+
+        total_sum, total_count = traverse(self.root)
+        return total_sum / total_count if total_count > 0 else 0
+
+    # b) Добавление вершины со значением среднего арифметического
+    def add_average_node(self):
+        avg = self.calculate_average()
+        self.insert(avg)
+
+    # 2a) Присваивание переменной b типа char значения К, П или Л
+    def classify_node(self, node):
+        if node is self.root:
+            return 'К'  # Корень
+        elif node.left or node.right:
+            return 'П'  # Промежуточная вершина
+        else:
+            return 'Л'  # Лист
+
+    # 2b) Распечатка значений всех вершин с классификацией
+    def print_tree(self):
+        def traverse(node):
+            if node is None:
+                return
+            traverse(node.left)
+            node_type = self.classify_node(node)
+            print(f"Value: {node.value}, Type: {node_type}")
+            traverse(node.right)
+
+        traverse(self.root)
+
+    # 3a) Нахождение максимального или минимального значения в дереве
+    def find_max_min(self, find_max=True):
+        def traverse(node):
+            if node is None:
+                return float('-inf') if find_max else float('inf')
+            left = traverse(node.left)
+            right = traverse(node.right)
+            if find_max:
+                return max(node.value, left, right)
+            else:
+                return min(node.value, left, right)
+
+        return traverse(self.root)
+
+    # 3b) Печать значений всех листьев дерева
+    def print_leaves(self):
+        def traverse(node):
+            if node is None:
+                return
+            if node.left is None and node.right is None:
+                print(f"Leaf: {node.value}")
+            traverse(node.left)
+            traverse(node.right)
+
+        traverse(self.root)
+
+# Пример использования дерева
+tree = BinaryTree()
+tree.insert(10)
+tree.insert(5)
+tree.insert(15)
+tree.insert(2)
+tree.insert(7)
+
+# 1a, 1b
+average = tree.calculate_average()
+print(f"Average: {average}")
+tree.add_average_node()
+
+# 2a, 2b
+tree.print_tree()
+
+# 3a, 3b
+max_value = tree.find_max_min(find_max=True)
+min_value = tree.find_max_min(find_max=False)
+print(f"Max: {max_value}, Min: {min_value}")
+
+tree.print_leaves()
