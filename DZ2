@@ -1,0 +1,117 @@
+# 1. Возвести в квадрат числа от 1 до 10, и рассчитать их сумму, не включая в сумму четные числа:
+from functools import reduce
+
+# Возводим в квадрат все числа от 1 до 10
+numbers = list(range(1, 11))
+
+# Фильтруем четные числа, возводим оставшиеся в квадрат
+squared_odd_numbers = filter(lambda x: x % 2 != 0, numbers)
+squared_numbers = map(lambda x: x ** 2, squared_odd_numbers)
+
+# Вычисляем сумму
+result = reduce(lambda x, y: x + y, squared_numbers)
+print(result)
+
+# 2. Превратить список целых чисел в строку, содержащую строковое представление этих чисел, разделенных пробелами:
+numbers = [1, 2, 3, 4, 5]
+
+# Преобразуем числа в строки и объединяем их через пробел
+result = reduce(lambda x, y: f"{x} {y}", map(str, numbers))
+print(result)
+
+# 3. Из нескольких одинаковых подряд идущих элементов списка оставить только один:
+from itertools import groupby
+
+numbers = [1, 2, 3, 4, 4, 4, 5, 6, 6, 7, 6, 1, 1]
+
+# Используем groupby для удаления повторяющихся элементов
+result = [key for key, _ in groupby(numbers)]
+print(result)
+
+# 4. Из списка списков извлечь элементы, содержащиеся по индексу 1:
+lists = [[1, 2, 3], [2, 3, 4], [0, 1 , 1 , 1], [0, 0]]
+
+# Извлекаем элементы с индексом 1
+result = list(map(lambda x: x[1], lists))
+print(result)
+
+# 5. Разделить список на два списка В и С, так чтобы каждый элемент В не превосходил каждого элемента С:
+def split_list(lst):
+    mid = len(lst) // 2
+    B = sorted(lst[:mid])
+    C = sorted(lst[mid:])
+    return B, C
+
+A = [1, 4, 2, 7, 3, 6]
+B, C = split_list(A)
+print("B:", B)
+print("C:", C)
+
+# 6. Найти средний элемент в списке из 2n + 1 элементов:
+def find_middle_element(lst):
+    return sorted(lst)[len(lst) // 2]
+
+lst = [1, 3, 5, 7, 9]
+result = find_middle_element(lst)
+print(result)
+
+# 7. Вывести индексы списка в том порядке, в котором соответствующие им элементы образуют возрастающую последовательность:
+numbers = [10, 20, 5, 15, 30]
+
+# Находим индексы, по которым элементы образуют возрастающую последовательность
+result = [index for index in range(len(numbers)) if numbers[index] == sorted(numbers)[index]]
+print(result)
+
+# 8. Рассчитать двойной факториал для нечетного числа:
+from functools import reduce
+
+def double_factorial_odd(n):
+    return reduce(lambda x, y: x * y, range(n, 0, -2))
+
+n = 9
+result = double_factorial_odd(n)
+print(result)
+
+# 9. Рассчитать двойной факториал для четного числа:
+def double_factorial_even(n):
+    return reduce(lambda x, y: x * y, range(n, 0, -2))
+
+n = 8
+result = double_factorial_even(n)
+print(result)
+
+# 10. Разделить список на два списка (положительные и отрицательные элементы):
+numbers = [1, -2, 3, -4, 5, -6]
+
+positives = list(filter(lambda x: x > 0, numbers))
+negatives = list(filter(lambda x: x < 0, numbers))
+
+print("Положительные:", positives)
+print("Отрицательные:", negatives)
+
+# 11. Вывести индексы четных элементов списка:
+numbers = [1, 2, 3, 4, 5, 6]
+
+# Индексы четных элементов
+result = [index for index, value in enumerate(numbers) if value % 2 == 0]
+print(result)
+
+# 12. Отсортировать список по фамилиям, первой оценке, и убыванию суммы баллов:
+def print_sorted_table(students, sort_func, reverse=False):
+    students_copy = students.copy()
+    students_copy.sort(key=sort_func, reverse=reverse)
+    
+    for student in students_copy:
+        print(f"{student[0]}: {student[1:]}")
+        
+# Исходные данные
+students = [['Иванов', 3, 5, 4], ['Петров', 4, 5, 5], ['Сидоров', 3, 3, 3], ['Николаев', 4, 4, 3]]
+
+# По фамилиям (алфавитный порядок)
+print_sorted_table(students, lambda x: x[0])
+
+# По первой оценке (по возрастанию)
+print_sorted_table(students, lambda x: x[1])
+
+# По убыванию суммы баллов
+print_sorted_table(students, lambda x: sum(x[1:]), reverse=True)
